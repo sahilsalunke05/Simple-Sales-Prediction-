@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sales Prediction</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        body {
+            font-family: Arial;
+            background: #f4f6f8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+            width: 350px;
+            text-align: center;
+        }
+
+        input {
+            width: 90%;
+            padding: 8px;
+            margin: 5px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            background: #007bff;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            width: 100%;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+
+        h2 {
+            margin-bottom: 10px;
+        }
+
+        canvas {
+            margin-top: 15px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="card">
+    <h2>Sales Prediction</h2>
+
+    <form action="/predict" method="post">
+        <input type="text" name="q" placeholder="Quantity"><br>
+        <input type="text" name="p" placeholder="Price"><br>
+        <input type="text" name="m" placeholder="MSRP"><br>
+        <input type="text" name="mo" placeholder="Month"><br>
+        <input type="text" name="y" placeholder="Year"><br>
+
+        <button type="submit">Predict</button>
+    </form>
+
+    {% if prediction %}
+        <h3>Predicted: {{ prediction }}</h3>
+
+        <!-- 📈 LINE CHART -->
+        <canvas id="lineChart"></canvas>
+
+        <script>
+            var ctx = document.getElementById('lineChart').getContext('2d');
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Quantity', 'Price', 'MSRP', 'Month', 'Year', 'Sales'],
+                    datasets: [{
+                        label: 'Data Trend',
+                        data: [
+                            {{ input_data[0] }},
+                            {{ input_data[1] }},
+                            {{ input_data[2] }},
+                            {{ input_data[3] }},
+                            {{ input_data[4] }},
+                            {{ prediction }}
+                        ],
+                        borderColor: 'blue',
+                        fill: false,
+                        tension: 0.3
+                    }]
+                }
+            });
+        </script>
+
+    {% endif %}
+</div>
+
+</body>
+</html>
